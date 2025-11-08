@@ -17,7 +17,6 @@ def on_drag_motion(event):
         y = widget.winfo_y() - widget._drag_start_y + event.y
         widget.place(x=x, y=y)
 
-
 #apps
 def Calculator():
     root_x = root.winfo_x() + (root.winfo_width() // 2) - 300
@@ -29,7 +28,7 @@ def Calculator():
     #Screen
     Screen = tk.Label(calc, width=15, height=1, text=" ", bg="#0000CC", bd=5, relief="ridge",
                       font=("Courier", 40, "bold"), fg="green")
-    Screen.place(x=0, y=0, width=500, height=80)  # fixed at top of calc
+    Screen.place(x=0, y=0, width=500, height=80)
     make_draggable(calc)
 
     cancel1 = tk.Button(calc, text="x", command=calc.destroy, fg="red", height=1, font=("Arial", 10))
@@ -157,6 +156,7 @@ def cookie():
     cancel = tk.Button(cookiewindow, text="x", command=cookiewindow.destroy, fg="red", height=1, font=("Arial", 10))
     cancel.place(relx=1, rely=0, anchor="ne")
 
+
 def logo():
     ascii_logo = r"""                                                         
 ▀███▀▀▀██▄                   ██        ▄▄█▀▀██▄  ▄█▀▀▀█▄█
@@ -166,10 +166,53 @@ def logo():
   ██    ▀███     ████     ██ ██      ██▄      ▄██     ▀██
   ██    ▄███▄   ▄████▄   ▄██ ██      ▀██▄    ▄██▀█     ██
 ▄████████  ▀█████▀  ▀█████▀  ▀████     ▀▀████▀▀ █▀█████▀ 
-                                                         
-                                                         
+
+
 """
     return ascii_logo
+def logo2():
+    ascii_logo2 = r"""     
+▀███▀▀▀██▄        ▄▄█▀▀██▄  ▄█▀▀▀█▄█
+  ██    ██      ▄██▀    ▀██▄██    ▀█
+  ██    ██      ██▀      ▀█████▄  
+  ██▀▀▀█▄▄ ████ ██        ██ ▀█████▄
+  ██    ▀█      ██▄      ▄██     ▀██
+  ██    ▄█      ▀██▄    ▄██▀█     ██
+▄████████         ▀▀████▀▀ █▀█████▀ 
+"""
+    return ascii_logo2
+
+def BootVer():
+    root_x = root.winfo_x() + (root.winfo_width() // 2) - 300
+    root_y = root.winfo_y() + (root.winfo_height() // 2) - 300
+    VerWindows = tk.Frame(root, bg="white", width=600, height=400, borderwidth=2, relief="ridge")
+    VerWindows.place(x=root_x, y=root_y)
+    VerWindows.lift()
+    logolabel = tk.Label(VerWindows, text=logo2(), bg="white", fg="black", justify="left", font=("Courier", 10),)
+    logolabel.place(x=300, y=90, anchor="center")
+
+    make_draggable(VerWindows)
+
+    label4 = tk.Label(VerWindows, text="BootOS Ver 1.1", bg="white", fg="black", font=("Arial", 12, "bold"))
+    label4.place(relx=0.5, y=250, anchor="center")
+
+    label5 = tk.Label(
+        VerWindows,
+        text=("License: This project is provided for educational and personal use. "
+              "It is released under a permissive license—feel free to modify, extend, or distribute the code. "
+              "Attribution is appreciated but not required. For commercial use, review the code for any third-party dependencies."),
+        bg="white",
+        fg="black",
+        justify="center",
+        wraplength=500
+    )
+    label5.place(relx=0.5, y=320, anchor="center")
+
+    cancel = tk.Button(VerWindows, text="x", command=VerWindows.destroy, fg="red", height=1, font=("Arial", 10))
+    cancel.place(relx=1, rely=0, anchor="ne")
+
+
+
 
 logs = [
     "Bootloader [OK]",
@@ -231,6 +274,9 @@ def show_os():
 
     cookieclick = tk.Button(root, text="CookieClicker.exe", command=cookie,)
     cookieclick.place(x=28, y=56,)
+
+    BootVer1 = tk.Button(root, text="BootVer", command=BootVer)
+    BootVer1.place(x=28, y=106,)
 
 #boot Screen
 screen_width = root.winfo_screenwidth()
