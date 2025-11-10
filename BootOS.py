@@ -192,7 +192,7 @@ def BootVer():
 
     make_draggable(VerWindows)
 
-    label4 = tk.Label(VerWindows, text="BootOS Ver 1.1", bg="white", fg="black", font=("Arial", 12, "bold"))
+    label4 = tk.Label(VerWindows, text="BootOS Ver 1.2", bg="white", fg="black", font=("Arial", 12, "bold"))
     label4.place(relx=0.5, y=250, anchor="center")
 
     label5 = tk.Label(
