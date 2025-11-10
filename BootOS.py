@@ -18,6 +18,7 @@ def on_drag_motion(event):
         widget.place(x=x, y=y)
 
 #apps
+
 def Calculator():
     root_x = root.winfo_x() + (root.winfo_width() // 2) - 300
     root_y = root.winfo_y() + (root.winfo_height() // 2) - 300
@@ -29,7 +30,6 @@ def Calculator():
     Screen = tk.Label(calc, width=15, height=1, text=" ", bg="#0000CC", bd=5, relief="ridge",
                       font=("Courier", 40, "bold"), fg="green")
     Screen.place(x=0, y=0, width=500, height=80)
-    make_draggable(calc)
 
     cancel1 = tk.Button(calc, text="x", command=calc.destroy, fg="red", height=1, font=("Arial", 10))
     cancel1.place(relx=1, rely=0, anchor="ne")
@@ -49,7 +49,7 @@ def Calculator():
             Screen.config(text=str(result))
         except (SyntaxError, ZeroDivisionError, TypeError, NameError):
             Screen.config(text="Error")
-            make_draggable(calc)
+            Screen.after(1000, lambda: Screen.config(text=""))
 
     # for those who want press
     def keypress(event):
@@ -117,6 +117,8 @@ def Calculator():
 
 
 def cookie():
+    root_x = root.winfo_x() + (root.winfo_width() // 2) - 300
+    root_y = root.winfo_y() + (root.winfo_height() // 2) - 300
     score = 0
     high_score_file = "high_score.txt"
     highscore = 0
@@ -134,8 +136,6 @@ def cookie():
             with open(high_score_file, "w") as f:
                 f.write(str(highscore))
 
-    root_x = root.winfo_x() + (root.winfo_width() // 2) - 300
-    root_y = root.winfo_y() + (root.winfo_height() // 2) - 300
     cookiewindow = tk.Frame(root, bg="white", height=600, width=600, borderwidth=2, relief="ridge")
     cookiewindow.place(x=root_x, y=root_y)
     root.lift()
@@ -155,7 +155,6 @@ def cookie():
 
     cancel = tk.Button(cookiewindow, text="x", command=cookiewindow.destroy, fg="red", height=1, font=("Arial", 10))
     cancel.place(relx=1, rely=0, anchor="ne")
-
 
 def logo():
     ascii_logo = r"""                                                         
@@ -211,7 +210,18 @@ def BootVer():
     cancel = tk.Button(VerWindows, text="x", command=VerWindows.destroy, fg="red", height=1, font=("Arial", 10))
     cancel.place(relx=1, rely=0, anchor="ne")
 
+def notepad():
+    root_x = root.winfo_x() + (root.winfo_width() // 2) - 300
+    root_y = root.winfo_y() + (root.winfo_height() // 2) - 300
+    notewindow = tk.Frame(root, bg="grey", height=400, width=500, borderwidth=2, relief="ridge")
+    notewindow.place(x=root_x, y=root_y)
+    make_draggable(notewindow)
 
+    text_box = tk.Text(notewindow, bg="white", fg="black", font=("Courier", 12))
+    text_box.place(x=10, y=10, width=480, height=380)
+
+    cancel = tk.Button(notewindow, text="x", command=notewindow.destroy, fg="red", height=1, font=("Arial", 10))
+    cancel.place(relx=1, rely=0, anchor="ne")
 
 
 logs = [
@@ -254,8 +264,7 @@ def show_logs(index=0):
         root.after(1000, blackout)
 
 def show_os():
-    #clock
-    global clock_label  # make it global so update_clock() can access it
+    global clock_label
     taskbar_height = 40
     taskbar = tk.Frame(root, bg="#C0C0C0", height=taskbar_height)
     taskbar.pack(side="bottom", fill="x")
@@ -265,10 +274,8 @@ def show_os():
     clock_label = tk.Label(taskbar, text="", bg="#C0C0C0", fg="black", font=("Courier New", 14))
     clock_label.pack(side="right", padx=5, pady=5)
 
-    # Start updating the clock
     update_clock()
 
-    #Start Menu
     startbutton = tk.Button(taskbar, text="Start Menu", bg="#C0C0C0", fg="black", command=start_menu, font=("Courier New", 12))
     startbutton.pack(side="left", padx=5, pady=5)
 
@@ -277,6 +284,9 @@ def show_os():
 
     BootVer1 = tk.Button(root, text="BootVer", command=BootVer)
     BootVer1.place(x=28, y=106,)
+
+    notepad1 = tk.Button(root, text="Notepad.exe", command=notepad,)
+    notepad1.place(x=28, y=156,)
 
 #boot Screen
 screen_width = root.winfo_screenwidth()
