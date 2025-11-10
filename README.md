@@ -65,6 +65,8 @@ The simulation runs in fullscreen mode for an immersive experience. Use the star
 | **CookieClicker.exe** | Score-based clicking game with high-score persistence.                     | Click the central "Cookie" button to increment score. |
 | **Clock**           | Live time display in the taskbar.                                           | Automatic updates every second. |
 | **Start Menu**      | System control popup.                                                       | "Shutdown" button to exit the simulation. |
+| **BootVer**         | Shows "OS" version.                                                         | Read Only. |
+| **Notepad.exe**     | Allows you to write                                                         | Click any key to write, enter to add a new line of text. |
 
 For a full list of interactive elements, explore the boot logs and desktop post-launch.
 
