@@ -67,6 +67,7 @@ The simulation runs in fullscreen mode for an immersive experience. Use the star
 | **Start Menu**      | System control popup.                                                       | "Shutdown" button to exit the simulation. |
 | **BootVer**         | Shows "OS" version.                                                         | Read Only. |
 | **Notepad.exe**     | Allows you to write                                                         | Click any key to write, enter to add a new line of text. |
+| **Paint.exe**       | Allows you to draw                                                          | Hold left key to draw, right click to change color. |
 
 For a full list of interactive elements, explore the boot logs and desktop post-launch.
 
