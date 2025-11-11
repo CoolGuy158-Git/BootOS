@@ -43,6 +43,8 @@ Note: This is a GUI-focused simulation; command-line elements are emulated visua
 
 **Dependencies**:
 - Tkinter (included with standard Python installations).
+- Time (included with standard Python installations).
+- Os (included with standard Python installations).
 - Pillow (`pip install Pillow`) for image processing (e.g., `cookie.png`).
 
 Place a `cookie.png` file in the project directory for the full cookie-clicker experience; otherwise, it defaults to text-only.
