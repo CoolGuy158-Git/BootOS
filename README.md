@@ -87,6 +87,7 @@ pixelartmaker.com was where the cookie.png was from
 This project is provided for educational and personal use. It is released under a permissive license—feel free to modify, extend, or distribute the code. Attribution is appreciated but not required. For commercial use, review the code for any third-party dependencies.
 
 ---
-*I am going to be updating this project every week, all previous ver will still be available.*
+*I am going to be updating this project every week.*
+
 *Project maintained by CoolGuy158-Git. Contributions via pull requests are welcome.*
 
