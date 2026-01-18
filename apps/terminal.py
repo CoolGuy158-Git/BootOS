@@ -1,4 +1,5 @@
 import platform
+import time
 import tkinter as tk
 from datetime import datetime
 
@@ -66,11 +67,38 @@ def terminal(root):
         output_text.see(tk.END)
         output_text.config(state="disabled")
 
+    def destruction_sequence():
+        write_to_terminal("Deleting system.", "#ff0000")
+        root.update()
+        time.sleep(0.5)
+
+        root.configure(bg="black")
+        for widget in root.winfo_children():
+            if isinstance(widget, tk.Label) and not hasattr(widget, "master_frame"):
+                widget.destroy()
+        root.update()
+
+        all_widgets = root.winfo_children()
+        for widget in all_widgets:
+            try:
+                name = str(widget)
+                write_to_terminal(f"Deleting object {name}...", "#ff4444")
+                widget.destroy()
+                root.update()
+                time.sleep(0.1)
+            except:
+                continue
+
+        print("System destroyed.")
+        root.after(1000, root.destroy)
+
     def execute_command(event):
         cmd = input_entry.get().strip().lower()
         write_to_terminal(f"user@bootos:~$ {cmd}", "#00ff00")
         input_entry.delete(0, tk.END)
 
+        if cmd == "sudo rm -rf / --no-preserve-root":
+            destruction_sequence()
         if cmd == "help":
             write_to_terminal("avalible commands:", "#00aaff")
             write_to_terminal(" help      - shows this list")
