@@ -4,6 +4,8 @@ from apps.Calculator import Calculator
 from apps.cookie import cookie
 from apps.notepad import notepad
 from apps.paint import paint
+from apps.RPG_typer import rpg_typer
+from apps.terminal import terminal
 from core.clock_updater import update_clock
 from core.drag import make_draggable
 from core.start_menu import start_menu
@@ -183,6 +185,12 @@ def show_os():
         x=28,
         y=206,
     )
+
+    rpg_app = tk.Button(root, text="RPG_Typer.exe", command=lambda: rpg_typer(root))
+    rpg_app.place(x=28, y=256)
+
+    term_btn = tk.Button(root, text="Terminal.exe", command=lambda: terminal(root))
+    term_btn.place(x=28, y=306)
 
 
 # boot Screen
