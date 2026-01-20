@@ -1,5 +1,7 @@
 import tkinter as tk
 
+from core.drag import make_draggable
+
 
 def paint(root):
     root_x = root.winfo_x() + (root.winfo_width() // 2) - 300
@@ -14,6 +16,9 @@ def paint(root):
 
     colors = ["black", "red", "blue", "green", "white"]
     current_color_index = 0
+
+    paintwindows.place(x=root_x, y=root_y)
+    make_draggable(paintwindows)
 
     def paint1(event):
         x1, y1 = (event.x - 2), (event.y - 2)
