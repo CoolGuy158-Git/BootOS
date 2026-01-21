@@ -1,11 +1,13 @@
 import tkinter as tk
 
+from apps.bullet_hell import bullet_hell
 from apps.Calculator import Calculator
 from apps.cookie import cookie
 from apps.notepad import notepad
 from apps.paint import paint
 from apps.RPG_typer import rpg_typer
 from apps.terminal import terminal
+from apps.tetris import tetris_app
 from core.clock_updater import update_clock
 from core.drag import make_draggable
 from core.start_menu import start_menu
@@ -191,6 +193,14 @@ def show_os():
 
     term_btn = tk.Button(root, text="Terminal.exe", command=lambda: terminal(root))
     term_btn.place(x=28, y=306)
+
+    tetris_btn = tk.Button(root, text="Tetris.exe", command=lambda: tetris_app(root))
+    tetris_btn.place(x=28, y=456)
+
+    bullet_hell_app = tk.Button(
+        root, text="Bullet Hell.exe", command=lambda: bullet_hell(root)
+    )
+    bullet_hell_app.place(x=180, y=6)
 
 
 # boot Screen
