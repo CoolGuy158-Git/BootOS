@@ -195,12 +195,12 @@ def show_os():
     term_btn.place(x=28, y=306)
 
     tetris_btn = tk.Button(root, text="Tetris.exe", command=lambda: tetris_app(root))
-    tetris_btn.place(x=28, y=456)
+    tetris_btn.place(x=28, y=406)
 
     bullet_hell_app = tk.Button(
         root, text="Bullet Hell.exe", command=lambda: bullet_hell(root)
     )
-    bullet_hell_app.place(x=180, y=6)
+    bullet_hell_app.place(x=28, y=356)
 
 
 # boot Screen

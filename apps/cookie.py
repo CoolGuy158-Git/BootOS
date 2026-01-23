@@ -3,14 +3,14 @@ import os
 import tkinter as tk
 
 from PIL import Image, ImageTk
-
 from core.drag import make_draggable
 
 
 def cookie(root):
-    width, height = 900, 900
+    width, height = 900, 700
     root_x = root.winfo_x() + (root.winfo_width() // 2) - (width // 2)
     root_y = root.winfo_y() + (root.winfo_height() // 2) - (height // 2)
+
 
     save_file = "cookie_save.json"
 
@@ -20,19 +20,13 @@ def cookie(root):
         "click_value": 1,
         "auto_cps": 0.0,
         "upgrades": {
-            "cursor": {"level": 0, "base_cost": 15, "power": 0.5, "name": "cursor"},
-            "grandma": {"level": 0, "base_cost": 100, "power": 1.0, "name": "grandma"},
-            "farm": {"level": 0, "base_cost": 500, "power": 5.0, "name": "farm"},
-            "bakery": {"level": 0, "base_cost": 1000, "power": 10, "name": "bakery"},
-            "factory": {
-                "level": 0,
-                "base_cost": 2000,
-                "power": 21.5,
-                "name": "Factory",
-            },
+            "cursor": {"level": 0, "base_cost": 15, "power": 0.5, "name": "Cursor"},
+            "grandma": {"level": 0, "base_cost": 100, "power": 1.0, "name": "Grandma"},
+            "farm": {"level": 0, "base_cost": 500, "power": 5.0, "name": "Farm"},
+            "bakery": {"level": 0, "base_cost": 1000, "power": 10, "name": "Bakery"},
+            "factory": {"level": 0, "base_cost": 2000, "power": 21.5, "name": "Factory"},
         },
     }
-
     if os.path.exists(save_file):
         try:
             with open(save_file, "r") as f:
@@ -50,20 +44,18 @@ def cookie(root):
         return int(upg["base_cost"] * (1.15 ** upg["level"]))
 
     def update_display():
-        score_label.config(text=f"Ciastka: {int(state['score'])}")
+        score_label.config(text=f"Cookies: {int(state['score'])}")
         cps_label.config(
-            text=f"Na sekundę: {round(state['auto_cps'], 1)} | Klik: {state['click_value']}"
+            text=f"CPS: {round(state['auto_cps'], 1)} | Click: {state['click_value']}"
         )
-        high_label.config(text=f"Rekord: {int(state['highscore'])}")
+        high_label.config(text=f"Highscore: {int(state['highscore'])}")
 
         for key, btn in upgrade_buttons.items():
             cost = get_cost(key)
             lvl = state["upgrades"][key]["level"]
-            btn.config(
-                text=f"{state['upgrades'][key]['name']}\nKoszt: {cost} | Poz: {lvl}"
-            )
+            btn.config(text=f"{state['upgrades'][key]['name']}\nCost: {cost} | Level: {lvl}")
 
-    def score1():
+    def click_cookie():
         state["score"] += state["click_value"]
         if state["score"] > state["highscore"]:
             state["highscore"] = state["score"]
@@ -92,19 +84,19 @@ def cookie(root):
             update_display()
         cookiewindow.after(100, auto_clicker)
 
-    cookiewindow = tk.Frame(
-        root, bg="#fcfcfc", height=height, width=width, borderwidth=2, relief="ridge"
-    )
+    cookiewindow = tk.Frame(root, bg="#fcfcfc", height=height, width=width, borderwidth=2, relief="ridge")
     cookiewindow.place(x=root_x, y=root_y)
-    make_draggable(cookiewindow)
-
+    title_bar = tk.Frame(cookiewindow, bg="#333333", height=25)
+    title_bar.pack(side="top", fill="x")
+    tk.Label(title_bar, text="Cookie Game", bg="#333", fg="gray", font=("Arial", 10)).pack(side="left", padx=5)
+    make_draggable(cookiewindow, handle=title_bar)
+    close_btn = tk.Button(title_bar, text="✕", bg="#ff4d4d", fg="white", bd=0, command=cookiewindow.destroy)
+    close_btn.pack(side="right", padx=5)
     side_panel = tk.Frame(cookiewindow, bg="#f0f0f0", width=500, height=height)
     side_panel.pack(side="right", fill="y")
     side_panel.pack_propagate(False)
 
-    tk.Label(side_panel, text="SKLEP", font=("Arial", 16, "bold"), bg="#f0f0f0").pack(
-        pady=20
-    )
+    tk.Label(side_panel, text="SHOP", font=("Arial", 16, "bold"), bg="#f0f0f0").pack(pady=20)
 
     upgrade_buttons = {}
     for key in state["upgrades"]:
@@ -138,16 +130,14 @@ def cookie(root):
         cookie_btn = tk.Button(
             main_area,
             image=photo,
-            command=score1,
+            command=click_cookie,
             bd=0,
             bg="white",
             activebackground="white",
         )
         cookie_btn.image = photo
     except:
-        cookie_btn = tk.Button(
-            main_area, text="Ciasteczko", command=score1, width=20, height=10
-        )
+        cookie_btn = tk.Button(main_area, text="Cookie", command=click_cookie, width=20, height=10)
 
     cookie_btn.pack(expand=True)
 
@@ -162,3 +152,4 @@ def cookie(root):
 
     update_display()
     auto_clicker()
+

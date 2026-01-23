@@ -29,77 +29,32 @@ class BulletHellGame:
         }
 
         self.levels = [
-            {
-                "duration": 10,
-                "bullet_speed": 2,
-                "spawn_rate": 30,
-                "patterns": ["straight"],
-            },
-            {
-                "duration": 15,
-                "bullet_speed": 2.5,
-                "spawn_rate": 25,
-                "patterns": ["straight", "circle"],
-            },
-            {
-                "duration": 20,
-                "bullet_speed": 3,
-                "spawn_rate": 20,
-                "patterns": ["straight", "circle", "wave"],
-            },
-            {
-                "duration": 20,
-                "bullet_speed": 3.5,
-                "spawn_rate": 18,
-                "patterns": ["straight", "circle", "wave", "spiral"],
-            },
-            {
-                "duration": 25,
-                "bullet_speed": 4,
-                "spawn_rate": 15,
-                "patterns": ["straight", "circle", "wave", "spiral"],
-            },
-            {
-                "duration": 25,
-                "bullet_speed": 4.5,
-                "spawn_rate": 13,
-                "patterns": ["straight", "circle", "wave", "spiral", "cross"],
-            },
-            {
-                "duration": 30,
-                "bullet_speed": 5,
-                "spawn_rate": 12,
-                "patterns": ["straight", "circle", "wave", "spiral", "cross"],
-            },
-            {
-                "duration": 30,
-                "bullet_speed": 5.5,
-                "spawn_rate": 10,
-                "patterns": ["straight", "circle", "wave", "spiral", "cross", "rain"],
-            },
-            {
-                "duration": 35,
-                "bullet_speed": 6,
-                "spawn_rate": 9,
-                "patterns": ["straight", "circle", "wave", "spiral", "cross", "rain"],
-            },
-            {
-                "duration": 40,
-                "bullet_speed": 6.5,
-                "spawn_rate": 8,
-                "patterns": [
-                    "straight",
-                    "circle",
-                    "wave",
-                    "spiral",
-                    "cross",
-                    "rain",
-                    "burst",
-                ],
-            },
+            {"duration": 10, "bullet_speed": 2, "spawn_rate": 30, "patterns": ["straight"]},
+            {"duration": 15, "bullet_speed": 2.5, "spawn_rate": 25, "patterns": ["straight", "circle"]},
+            {"duration": 20, "bullet_speed": 3, "spawn_rate": 20, "patterns": ["straight", "circle", "wave"]},
+            {"duration": 20, "bullet_speed": 3.5, "spawn_rate": 18, "patterns": ["straight", "circle", "wave", "spiral"]},
+            {"duration": 25, "bullet_speed": 4, "spawn_rate": 15, "patterns": ["straight", "circle", "wave", "spiral"]},
+            {"duration": 25, "bullet_speed": 4.5, "spawn_rate": 13, "patterns": ["straight", "circle", "wave", "spiral", "cross"]},
+            {"duration": 30, "bullet_speed": 5, "spawn_rate": 12, "patterns": ["straight", "circle", "wave", "spiral", "cross"]},
+            {"duration": 30, "bullet_speed": 5.5, "spawn_rate": 10, "patterns": ["straight", "circle", "wave", "spiral", "cross", "rain"]},
+            {"duration": 35, "bullet_speed": 6, "spawn_rate": 9, "patterns": ["straight", "circle", "wave", "spiral", "cross", "rain"]},
+            {"duration": 40, "bullet_speed": 6.5, "spawn_rate": 8, "patterns": ["straight", "circle", "wave", "spiral", "cross", "rain", "burst"]},
         ]
 
         self.load_progress()
+        self.title_bar = None
+        self.menu_frame = None
+        self.canvas = None
+        self.ui_label = None
+        self.is_playing = False
+        self.create_menu()
+
+    def return_to_menu(self):
+        self.is_playing = False
+        if self.canvas and self.canvas.winfo_exists():
+            self.canvas.destroy()
+        if self.ui_label and self.ui_label.winfo_exists():
+            self.ui_label.destroy()
         self.create_menu()
 
     def load_progress(self):
@@ -122,8 +77,14 @@ class BulletHellGame:
             json.dump(data, f)
 
     def create_menu(self):
+        if self.menu_frame and self.menu_frame.winfo_exists():
+            self.menu_frame.destroy()
+
         self.menu_frame = tk.Frame(self.game_win, bg="#1a1a2e")
         self.menu_frame.place(x=0, y=0, width=self.width, height=self.height)
+
+        if self.title_bar and self.title_bar.winfo_exists():
+            self.title_bar.lift()
 
         title = tk.Label(
             self.menu_frame,
@@ -140,11 +101,9 @@ class BulletHellGame:
         for i in range(10):
             row = i // 5
             col = i % 5
-
             btn_text = str(i + 1)
             if i in self.completed_levels:
                 btn_text += " ✓"
-
             btn = tk.Button(
                 levels_frame,
                 text=btn_text,
@@ -177,7 +136,6 @@ class BulletHellGame:
         self.is_playing = True
         self.start_time = time.time()
         self.frame_count = 0
-
         self.menu_frame.destroy()
         self.create_game()
 
@@ -187,7 +145,6 @@ class BulletHellGame:
         self.start_time = time.time()
         self.endless_score = 0
         self.frame_count = 0
-
         self.menu_frame.destroy()
         self.create_game()
 
@@ -199,12 +156,12 @@ class BulletHellGame:
             bg="black",
             highlightthickness=0,
         )
-        self.canvas.place(x=0, y=0)
+        self.canvas.place(x=0, y=25)
 
         self.ui_label = tk.Label(
             self.game_win, text="", font=("Arial", 14, "bold"), bg="black", fg="white"
         )
-        self.ui_label.place(x=10, y=10)
+        self.ui_label.place(x=10, y=25)
 
         back_btn = tk.Button(
             self.game_win,
@@ -214,7 +171,7 @@ class BulletHellGame:
             fg="white",
             command=self.return_to_menu,
         )
-        back_btn.place(x=self.width - 80, y=10)
+        back_btn.place(x=self.width - 80, y=25)
 
         self.player = {
             "x": self.width / 2,
@@ -243,15 +200,7 @@ class BulletHellGame:
         if self.is_endless:
             level = {
                 "bullet_speed": 3 + (self.endless_score // 10) * 0.5,
-                "patterns": [
-                    "straight",
-                    "circle",
-                    "wave",
-                    "spiral",
-                    "cross",
-                    "rain",
-                    "burst",
-                ],
+                "patterns": ["straight", "circle", "wave", "spiral", "cross", "rain", "burst"],
             }
         else:
             level = self.levels[self.current_level]
@@ -315,131 +264,62 @@ class BulletHellGame:
         if pattern == "straight":
             side = data["side"]
             if side == 0:
-                self.bullets.append(
-                    {
-                        "x": data["x"],
-                        "y": -10,
-                        "vx": 0,
-                        "vy": speed,
-                        "size": 8,
-                        "color": color,
-                    }
-                )
+                self.bullets.append({"x": data["x"], "y": -10, "vx": 0, "vy": speed, "size": 8, "color": color})
             elif side == 1:
-                self.bullets.append(
-                    {
-                        "x": self.width + 10,
-                        "y": data["y"],
-                        "vx": -speed,
-                        "vy": 0,
-                        "size": 8,
-                        "color": color,
-                    }
-                )
+                self.bullets.append({"x": self.width + 10, "y": data["y"], "vx": -speed, "vy": 0, "size": 8, "color": color})
             elif side == 2:
-                self.bullets.append(
-                    {
-                        "x": data["x"],
-                        "y": self.height + 10,
-                        "vx": 0,
-                        "vy": -speed,
-                        "size": 8,
-                        "color": color,
-                    }
-                )
+                self.bullets.append({"x": data["x"], "y": self.height + 10, "vx": 0, "vy": -speed, "size": 8, "color": color})
             else:
-                self.bullets.append(
-                    {
-                        "x": -10,
-                        "y": data["y"],
-                        "vx": speed,
-                        "vy": 0,
-                        "size": 8,
-                        "color": color,
-                    }
-                )
+                self.bullets.append({"x": -10, "y": data["y"], "vx": speed, "vy": 0, "size": 8, "color": color})
 
         elif pattern == "circle":
             for i in range(12):
                 angle = (math.pi * 2 * i) / 12
-                self.bullets.append(
-                    {
-                        "x": data["x"],
-                        "y": data["y"],
-                        "vx": math.cos(angle) * speed,
-                        "vy": math.sin(angle) * speed,
-                        "size": 7,
-                        "color": color,
-                    }
-                )
+                self.bullets.append({"x": data["x"], "y": data["y"], "vx": math.cos(angle) * speed, "vy": math.sin(angle) * speed, "size": 7, "color": color})
 
         elif pattern == "wave":
             for i in range(8):
-                self.bullets.append(
-                    {
-                        "x": (self.width / 8) * i,
-                        "y": -10 if data["y"] < self.height / 2 else self.height + 10,
-                        "vx": math.sin(i) * speed * 0.5,
-                        "vy": speed if data["y"] < self.height / 2 else -speed,
-                        "size": 6,
-                        "color": color,
-                    }
-                )
+                self.bullets.append({
+                    "x": (self.width / 8) * i,
+                    "y": -10 if data["y"] < self.height / 2 else self.height + 10,
+                    "vx": math.sin(i) * speed * 0.5,
+                    "vy": speed if data["y"] < self.height / 2 else -speed,
+                    "size": 6,
+                    "color": color,
+                })
 
         elif pattern == "spiral":
             rotation = time.time()
             for i in range(6):
                 angle = (math.pi * 2 * i) / 6 + rotation
-                self.bullets.append(
-                    {
-                        "x": data["x"],
-                        "y": data["y"],
-                        "vx": math.cos(angle) * speed,
-                        "vy": math.sin(angle) * speed,
-                        "size": 8,
-                        "color": color,
-                    }
-                )
+                self.bullets.append({"x": data["x"], "y": data["y"], "vx": math.cos(angle) * speed, "vy": math.sin(angle) * speed, "size": 8, "color": color})
 
         elif pattern == "cross":
             for dx, dy in [(speed, 0), (-speed, 0), (0, speed), (0, -speed)]:
-                self.bullets.append(
-                    {
-                        "x": data["x"],
-                        "y": data["y"],
-                        "vx": dx,
-                        "vy": dy,
-                        "size": 7,
-                        "color": color,
-                    }
-                )
+                self.bullets.append({"x": data["x"], "y": data["y"], "vx": dx, "vy": dy, "size": 7, "color": color})
 
         elif pattern == "rain":
             for _ in range(10):
-                self.bullets.append(
-                    {
-                        "x": random.randint(0, self.width),
-                        "y": -10,
-                        "vx": (random.random() - 0.5) * speed * 0.5,
-                        "vy": speed,
-                        "size": 5,
-                        "color": color,
-                    }
-                )
+                self.bullets.append({
+                    "x": random.randint(0, self.width),
+                    "y": -10,
+                    "vx": (random.random() - 0.5) * speed * 0.5,
+                    "vy": speed,
+                    "size": 5,
+                    "color": color,
+                })
 
         elif pattern == "burst":
             for i in range(16):
                 angle = (math.pi * 2 * i) / 16
-                self.bullets.append(
-                    {
-                        "x": data["x"],
-                        "y": data["y"],
-                        "vx": math.cos(angle) * speed * 1.2,
-                        "vy": math.sin(angle) * speed * 1.2,
-                        "size": 6,
-                        "color": color,
-                    }
-                )
+                self.bullets.append({
+                    "x": data["x"],
+                    "y": data["y"],
+                    "vx": math.cos(angle) * speed * 1.2,
+                    "vy": math.sin(angle) * speed * 1.2,
+                    "size": 6,
+                    "color": color,
+                })
 
     def update(self):
         if "left" in self.keys or "a" in self.keys:
@@ -451,13 +331,8 @@ class BulletHellGame:
         if "down" in self.keys or "s" in self.keys:
             self.player["y"] += self.player["speed"]
 
-        self.player["x"] = max(
-            self.player["size"], min(self.width - self.player["size"], self.player["x"])
-        )
-        self.player["y"] = max(
-            self.player["size"],
-            min(self.height - self.player["size"], self.player["y"]),
-        )
+        self.player["x"] = max(self.player["size"], min(self.width - self.player["size"], self.player["x"]))
+        self.player["y"] = max(self.player["size"], min(self.height - self.player["size"], self.player["y"]))
 
         if self.is_endless:
             spawn_rate = max(5, 20 - (self.endless_score // 10))
@@ -481,16 +356,10 @@ class BulletHellGame:
             bullet["x"] += bullet["vx"]
             bullet["y"] += bullet["vy"]
 
-        self.bullets = [
-            b
-            for b in self.bullets
-            if -50 < b["x"] < self.width + 50 and -50 < b["y"] < self.height + 50
-        ]
+        self.bullets = [b for b in self.bullets if -50 < b["x"] < self.width + 50 and -50 < b["y"] < self.height + 50]
 
         for bullet in self.bullets:
-            dist = math.hypot(
-                bullet["x"] - self.player["x"], bullet["y"] - self.player["y"]
-            )
+            dist = math.hypot(bullet["x"] - self.player["x"], bullet["y"] - self.player["y"])
             if dist < self.player["size"] + bullet["size"]:
                 self.game_over()
                 return
@@ -523,160 +392,53 @@ class BulletHellGame:
             if pattern == "straight":
                 side = data["side"]
                 if side == 0:
-                    self.canvas.create_line(
-                        data["x"], 0, data["x"], 0, fill=warning_color, width=3
-                    )
+                    self.canvas.create_line(data["x"], 0, data["x"], 0, fill=warning_color, width=3)
                     for i in range(5):
                         y = i * 20
-                        self.canvas.create_polygon(
-                            data["x"],
-                            y + 10,
-                            data["x"] - 5,
-                            y,
-                            data["x"] + 5,
-                            y,
-                            fill=warning_color,
-                        )
+                        self.canvas.create_polygon(data["x"], y + 10, data["x"] - 5, y, data["x"] + 5, y, fill=warning_color)
                 elif side == 1:
-                    self.canvas.create_line(
-                        self.width,
-                        data["y"],
-                        self.width,
-                        data["y"],
-                        fill=warning_color,
-                        width=3,
-                    )
+                    self.canvas.create_line(self.width, data["y"], self.width, data["y"], fill=warning_color, width=3)
                     for i in range(5):
                         x = self.width - i * 20
-                        self.canvas.create_polygon(
-                            x - 10,
-                            data["y"],
-                            x,
-                            data["y"] - 5,
-                            x,
-                            data["y"] + 5,
-                            fill=warning_color,
-                        )
+                        self.canvas.create_polygon(x - 10, data["y"], x, data["y"] - 5, x, data["y"] + 5, fill=warning_color)
                 elif side == 2:
-                    self.canvas.create_line(
-                        data["x"],
-                        self.height,
-                        data["x"],
-                        self.height,
-                        fill=warning_color,
-                        width=3,
-                    )
+                    self.canvas.create_line(data["x"], self.height, data["x"], self.height, fill=warning_color, width=3)
                     for i in range(5):
                         y = self.height - i * 20
-                        self.canvas.create_polygon(
-                            data["x"],
-                            y - 10,
-                            data["x"] - 5,
-                            y,
-                            data["x"] + 5,
-                            y,
-                            fill=warning_color,
-                        )
+                        self.canvas.create_polygon(data["x"], y - 10, data["x"] - 5, y, data["x"] + 5, y, fill=warning_color)
                 else:
-                    self.canvas.create_line(
-                        0, data["y"], 0, data["y"], fill=warning_color, width=3
-                    )
+                    self.canvas.create_line(0, data["y"], 0, data["y"], fill=warning_color, width=3)
                     for i in range(5):
                         x = i * 20
-                        self.canvas.create_polygon(
-                            x + 10,
-                            data["y"],
-                            x,
-                            data["y"] - 5,
-                            x,
-                            data["y"] + 5,
-                            fill=warning_color,
-                        )
+                        self.canvas.create_polygon(x + 10, data["y"], x, data["y"] - 5, x, data["y"] + 5, fill=warning_color)
 
             elif pattern in ["circle", "spiral", "burst"]:
                 radius = 30 + math.sin(progress * math.pi * 6) * 5
-                self.canvas.create_oval(
-                    data["x"] - radius,
-                    data["y"] - radius,
-                    data["x"] + radius,
-                    data["y"] + radius,
-                    outline=warning_color,
-                    width=3,
-                )
-                self.canvas.create_oval(
-                    data["x"] - 5,
-                    data["y"] - 5,
-                    data["x"] + 5,
-                    data["y"] + 5,
-                    fill=warning_color,
-                )
+                self.canvas.create_oval(data["x"] - radius, data["y"] - radius, data["x"] + radius, data["y"] + radius, outline=warning_color, width=3)
+                self.canvas.create_oval(data["x"] - 5, data["y"] - 5, data["x"] + 5, data["y"] + 5, fill=warning_color)
 
             elif pattern == "wave":
                 y = data["y"]
-                self.canvas.create_line(
-                    0, y, self.width, y, fill=warning_color, width=3
-                )
+                self.canvas.create_line(0, y, self.width, y, fill=warning_color, width=3)
                 for i in range(5):
                     x = i * (self.width // 4)
                     if y < self.height / 2:
-                        self.canvas.create_polygon(
-                            x, y + 10, x - 5, y, x + 5, y, fill=warning_color
-                        )
+                        self.canvas.create_polygon(x, y + 10, x - 5, y, x + 5, y, fill=warning_color)
                     else:
-                        self.canvas.create_polygon(
-                            x, y - 10, x - 5, y, x + 5, y, fill=warning_color
-                        )
+                        self.canvas.create_polygon(x, y - 10, x - 5, y, x + 5, y, fill=warning_color)
 
             elif pattern == "cross":
                 x, y = data["x"], data["y"]
                 size = 40
-                self.canvas.create_line(
-                    x - size, y, x + size, y, fill=warning_color, width=3
-                )
-                self.canvas.create_line(
-                    x, y - size, x, y + size, fill=warning_color, width=3
-                )
-                self.canvas.create_polygon(
-                    x + size + 10,
-                    y,
-                    x + size,
-                    y - 5,
-                    x + size,
-                    y + 5,
-                    fill=warning_color,
-                )
-                self.canvas.create_polygon(
-                    x - size - 10,
-                    y,
-                    x - size,
-                    y - 5,
-                    x - size,
-                    y + 5,
-                    fill=warning_color,
-                )
-                self.canvas.create_polygon(
-                    x,
-                    y + size + 10,
-                    x - 5,
-                    y + size,
-                    x + 5,
-                    y + size,
-                    fill=warning_color,
-                )
-                self.canvas.create_polygon(
-                    x,
-                    y - size - 10,
-                    x - 5,
-                    y - size,
-                    x + 5,
-                    y - size,
-                    fill=warning_color,
-                )
+                self.canvas.create_line(x - size, y, x + size, y, fill=warning_color, width=3)
+                self.canvas.create_line(x, y - size, x, y + size, fill=warning_color, width=3)
+                self.canvas.create_polygon(x + size + 10, y, x + size, y - 5, x + size, y + 5, fill=warning_color)
+                self.canvas.create_polygon(x - size - 10, y, x - size, y - 5, x - size, y + 5, fill=warning_color)
+                self.canvas.create_polygon(x, y + size + 10, x - 5, y + size, x + 5, y + size, fill=warning_color)
+                self.canvas.create_polygon(x, y - size - 10, x - 5, y - size, x + 5, y - size, fill=warning_color)
 
             elif pattern == "rain":
-                self.canvas.create_line(
-                    0, 0, self.width, 0, fill=warning_color, width=3
-                )
+                self.canvas.create_line(0, 0, self.width, 0, fill=warning_color, width=3)
 
         for bullet in self.bullets:
             self.canvas.create_oval(
@@ -691,21 +453,13 @@ class BulletHellGame:
         x, y = self.player["x"], self.player["y"]
         size = self.player["size"]
         self.canvas.create_polygon(
-            x,
-            y + size * 1.5,
-            x - size,
-            y + size / 4,
-            x - size,
-            y - size / 2,
-            x,
-            y + size / 4,
-            x + size,
-            y - size / 2,
-            x + size,
-            y + size / 4,
-            fill="#ff0000",
-            outline="",
-            smooth=True,
+            x, y + size * 1.5,
+            x - size, y + size / 4,
+            x - size, y - size / 2,
+            x, y + size / 4,
+            x + size, y - size / 2,
+            x + size, y + size / 4,
+            fill="#ff0000", outline="", smooth=True
         )
 
         if self.is_endless:
@@ -713,17 +467,15 @@ class BulletHellGame:
         else:
             elapsed = time.time() - self.start_time
             remaining = max(0, self.levels[self.current_level]["duration"] - elapsed)
-            self.ui_label.config(
-                text=f"Level {self.current_level + 1} | Time: {remaining:.1f}s"
-            )
+            self.ui_label.config(text=f"Level {self.current_level + 1} | Time: {remaining:.1f}s")
 
     def game_loop(self):
         if not self.is_playing:
             return
-
-        self.update()
-        self.draw()
-        self.master.after(16, self.game_loop)
+        if self.canvas and self.canvas.winfo_exists():
+            self.update()
+            self.draw()
+            self.master.after(16, self.game_loop)
 
     def game_over(self):
         self.is_playing = False
@@ -742,49 +494,41 @@ class BulletHellGame:
         self.save_progress()
 
         if self.current_level < 9:
-            result = messagebox.askyesno(
-                "Victory!", "VICTORY!\n\nPlay next level?", parent=self.game_win
-            )
+            result = messagebox.askyesno("Victory!", "VICTORY!\n\nPlay next level?", parent=self.game_win)
             if result:
-                self.canvas.destroy()
-                self.ui_label.destroy()
+                if self.canvas:
+                    self.canvas.destroy()
+                if self.ui_label:
+                    self.ui_label.destroy()
                 self.start_level(self.current_level + 1)
             else:
                 self.return_to_menu()
         else:
-            messagebox.showinfo(
-                "Victory!",
-                "VICTORY!\n\nYou completed all levels!",
-                parent=self.game_win,
-            )
+            messagebox.showinfo("Victory!", "VICTORY!\n\nYou completed all levels!", parent=self.game_win)
             self.return_to_menu()
-
-    def return_to_menu(self):
-        self.is_playing = False
-        for widget in self.game_win.winfo_children():
-            widget.destroy()
-        self.create_menu()
 
 
 def bullet_hell(root):
     root_x = root.winfo_x() + (root.winfo_width() // 2) - 400
     root_y = root.winfo_y() + (root.winfo_height() // 2) - 300
-
-    game_win = tk.Frame(
-        root, bg="#1a1a2e", height=800, width=600, borderwidth=2, relief="ridge"
-    )
+    game_win = tk.Frame(root, bg="#1a1a2e", height=600, width=800, borderwidth=2, relief="ridge")
     game_win.place(x=root_x, y=root_y)
     root.lift()
-    make_draggable(game_win)
 
     title_bar = tk.Frame(game_win, bg="#333", height=25)
-    title_bar.place(x=0, y=0, width=800, height=25)
-    tk.Label(
-        title_bar, text="Bullet Hell", bg="#333", fg="white", font=("Arial", 9)
-    ).pack(side="left", padx=5)
+    title_bar.place(x=0, y=0, width=800)
+    tk.Label(title_bar, text="Bullet Hell", bg="#333", fg="white", font=("Arial", 9)).pack(side="left", padx=5)
+    tk.Button(title_bar, text="✕", command=game_win.destroy, bg="#333", fg="red", bd=0).pack(side="right", padx=5)
 
-    tk.Button(
-        title_bar, text="x", command=game_win.destroy, bg="#333", fg="red", bd=0
-    ).pack(side="right", padx=5)
+    make_draggable(game_win, handle=title_bar)
+    title_bar.lift()
 
     game = BulletHellGame(root, game_win)
+    game.title_bar = title_bar
+
+
+
+
+
+
+
