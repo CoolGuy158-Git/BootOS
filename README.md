@@ -54,9 +54,9 @@ Place a `cookie.png` file in the project directory for the full cookie-clicker e
 | Cookie Clicker| Click to earn cookies, buy upgrades for idle gains | 
 | Terminal      | Run commands, simulate hacking or control system   |
 | Paint App     | Draw with mouse/pen tools                          |
-| Rpg Typer     | Type words/phrases to battle in an RPG style       |
+| Rpg Typer     | Type words/phrases to gain points and level up     |
 | Tetris        | Rotate and drop tetrominoes to clear lines         |
-| Notepad       | Write, edit, and save plain text notes             |
+| Notepad       | Write text                                         |
 </details>
 
 -----
@@ -72,6 +72,7 @@ Place a `cookie.png` file in the project directory for the full cookie-clicker e
 
 ![Python](https://img.shields.io/badge/python-3.8+-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
+
 
 
 
